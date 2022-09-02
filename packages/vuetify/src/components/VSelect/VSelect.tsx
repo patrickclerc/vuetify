@@ -23,11 +23,12 @@ import { computed, mergeProps, ref } from 'vue'
 import { genericComponent, propsFactory, useRender, wrapInArray } from '@/util'
 
 // Types
+import type { PropType } from 'vue'
+import type { MakeSlots } from '@/util'
 import type { VInputSlots } from '@/components/VInput/VInput'
 import type { VFieldSlots } from '@/components/VField/VField'
 import type { InternalItem } from '@/composables/items'
-import type { MakeSlots } from '@/util'
-import type { PropType } from 'vue'
+import type { ListItemSlot } from '../VList/VListChildren'
 
 export const makeSelectProps = propsFactory({
   chips: Boolean,
@@ -87,8 +88,8 @@ export const VSelect = genericComponent<new <
     'onUpdate:modelValue'?: (val: V) => void
   }
   $slots: Omit<VInputSlots & VFieldSlots, 'default'> & MakeSlots<{
-    item: [{ item: T, index: number, props: Record<string, unknown> }]
-    chip: [{ item: T, index: number, props: Record<string, unknown> }]
+    item: [ListItemSlot<T>]
+    chip: [ListItemSlot<T>]
     selection: [{ item: T, index: number }]
     'no-data': []
   }>
@@ -152,7 +153,7 @@ export const VSelect = genericComponent<new <
         menu.value = false
       }
     }
-    function select (item: InternalItem) {
+    function select (item: InternalItem<any>) {
       if (props.multiple) {
         const index = selected.value.findIndex(selection => selection === item.value)
 
